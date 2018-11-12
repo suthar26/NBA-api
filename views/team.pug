@@ -1,0 +1,30 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+  div
+    table#teamTable
+      thead
+        tr
+          th(onclick="sortTable(0)") Home Team 
+          th Home Score
+          th Away Score
+          th Away Team
+          th Nugget
+      tbody
+        each game in schedule
+          tr
+            td
+              a(href=game.hTeam.url) 
+                span #{game.hTeam.fullName}
+            td=game.hTeam.score
+            td=game.vTeam.score
+            td
+              a(href=game.vTeam.url) 
+                span #{game.vTeam.fullName}
+            td=game.nugget.text
+
+
+
+  

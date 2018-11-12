@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+
+  ul
+    each team in teams
+      if(team.isNBAFranchise)
+        li
+          a(href=team.url) 
+            h1 #{team.fullName} 
