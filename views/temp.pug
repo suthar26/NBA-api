@@ -1,0 +1,5 @@
+extends layout
+
+block content
+  each elem in arr
+    p  #{elem.player} #{elem.team} #{elem.gp} #{(elem.fg_pct*100).toFixed(2)} #{elem.pts}

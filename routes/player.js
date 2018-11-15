@@ -11,26 +11,25 @@ var playersArr = JSON.parse(fs.readFileSync('./data/players.json','utf8'))
 /* GET home page. */
 router.get('/', function(req, res, next) {
   // console.log(req.query)
-  nba.data.teamStatsLeaders({
-    year:2018,
-  }).then(query => {
-    query = query.league.standard.regularSeason.teams
-    delete query.preseason
-    delete query.seasonYear
-    
-    var statsArr = query
-    statsArr = statsArr.filter(team=>{
-      return _.find(teamsArr,{teamId : team.teamId}) != undefined
-    }).map(team=>{
-      var temp = _.find(teamsArr,{teamId : team.teamId})
-      team.fullName = temp.fullName
-      return team 
-    });
-    console.log(statsArr)
-    res.render('teamStatLeader', { title: 'Team - NBA API Test' , schedule: query });
-  }).catch(error=>{
-    console.error("Schedule: "+error)
-  })
+  nba.stats.boxscoreAdvanced(function(err,query){
+    if(err){
+      console.error(err)
+      return
+    }
+    console.log(query);
+    res.render('temp', { query: query});
+    // res.render('index');
+  });
+  
+  // nba.stats.allPlayers({
+  //   LeagueID: 00,
+  //   Season: 2018-19,
+  //   IsOnlyCurrentSeason: 1
+  // }).then(query => {
+  //     console.log("here")
+  //     console.log(query)
+  //     res.render('index', { title: 'Team - NBA API Test'});
+  // }).catch(err=> console.error(err));
 });
 
 router.get('/:team', function(req, res) {
