@@ -11,7 +11,29 @@ var fsp = require('fs').promises;
 var app = express();
 var nba = require('nba.js');
 var _ = require('underscore');
+var request = require('request')
 
+var options = {
+  method : 'GET',
+  url : 'https://basketballmonster.com/monster.aspx',
+  headers : {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+    'Accept-Encoding': 'gzip, deflate, br',
+    'Accept-Language': 'en-CA,en-GB;q=0.9,en-US;q=0.8,en;q=0.7,lb;q=0.6',
+    'Host': 'basketballmonster.com',
+    'Connection': 'keep-alive',
+    'Upgrade-Insecure-Requests': '1',
+    'DNT': '1',
+    'Cookie': 'RotoMonsterUserId=iXW+kZ49/HCrwJ4qPWrTY90+Edv2YNww/A6qNA3Dqlo=; ASP.NET_SessionId=roheoc3bjnyqxkfgm1c2bwcd'
+  },
+}
+
+request(options,(err,res,body)=>{
+  if(!err && res.statusCode == 200){
+    console.log(body)
+  }
+})
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -58,16 +80,14 @@ function getTeams(year){
       newTeam.url = '/team/' + team.urlName;
       return newTeam;
     });
-    return fsp.writeFile('./data/teams.json',JSON.stringify(teamsArr));
-  })
-  .then(()=>{
-    console.log('write team.json success');
-  }) 
-  .catch(error=>{
-    console.error("SHIEEET"+error)
-  })
+    fs.writeFile('./data/team.json',JSON.stringify(teamsArr),err => {
+      if(err)
+        logger.error(err)
+      
+      console.log('write teams.json successful') ; 
+    })
+})
 }
-
 function getPlayers(year){
   nba.data.players({
     year:year
